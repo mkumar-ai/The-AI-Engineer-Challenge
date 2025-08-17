@@ -17,16 +17,30 @@ A minimal Next.js application for analyzing sentiment of text using AI.
    npm install
    ```
 
-2. Run the development server:
+2. Create environment configuration:
+   ```bash
+   # Create .env.local file in the frontend directory
+   echo "NEXT_PUBLIC_API_BASE=http://127.0.0.1:8000" > .env.local
+   ```
+
+3. Run the development server:
    ```bash
    npm run dev
    ```
 
-3. Open [http://localhost:3000](http://localhost:3000) in your browser.
+4. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## Environment Variables
+
+The app uses the following environment variable:
+
+- `NEXT_PUBLIC_API_BASE`: The base URL for your backend API
+  - Development: `http://127.0.0.1:8000`
+  - Production: `https://your-production-domain.com`
 
 ## API Endpoint
 
-The app expects a backend API running at `http://127.0.0.1:8000/sentiment` that accepts POST requests with the following format:
+The app expects a backend API running at the URL specified in `NEXT_PUBLIC_API_BASE` with the `/sentiment` endpoint that accepts POST requests with the following format:
 
 **Request:**
 ```json
