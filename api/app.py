@@ -27,6 +27,10 @@ class SentimentOut(BaseModel):
     label: Literal["positive", "neutral", "negative"]
     confidence: float = Field(..., ge=0, le=1)
 
+@app.get("/")
+def root():
+    return {"message": "Sentiment Analysis API", "version": "1.0", "endpoints": ["/health", "/sentiment"]}
+
 @app.get("/health")
 def health():
     return {"ok": True}
