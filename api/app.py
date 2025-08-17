@@ -10,6 +10,8 @@ client = OpenAI(api_key=os.getenv("OPENAI_API_KEY"))
 
 app = FastAPI(title="Sentiment API", version="1.0")
 
+from fastapi.middleware.cors import CORSMiddleware
+
 # CORS so the Next.js dev server can call us locally
 app.add_middleware(
     CORSMiddleware,
