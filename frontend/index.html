@@ -1,0 +1,133 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Supportive Mental Coach</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+        }
+        .chat-box {
+            background: white;
+            width: 900px;              /* Wider window */
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(0,0,0,0.1);
+        }
+        .messages {
+            height: 450px;            /* Taller chat area */
+            overflow-y: auto;
+            border: 1px solid #ddd;
+            padding: 15px;
+            margin-bottom: 10px;
+            background: #fafafa;
+        }
+        .user {
+            color: #1a4cff;
+            margin-bottom: 8px;
+        }
+        .coach {
+            color: #1a7f37;
+            margin-bottom: 12px;
+        }
+        .status {
+            font-style: italic;
+            color: gray;
+            margin-bottom: 10px;
+        }
+        .controls {
+            display: flex;
+            gap: 10px;
+        }
+        input {
+            flex: 1;
+            padding: 10px;
+            font-size: 14px;
+        }
+        button {
+            padding: 10px 14px;
+            font-size: 14px;
+            cursor: pointer;
+        }
+        .clear-btn {
+            background-color: #e74c3c;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+        .send-btn {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+        }
+    </style>
+</head>
+<body>
+<div class="chat-box">
+    <h2>🧠 Supportive Mental Coach</h2>
+    <p>I am your mental coach. How can I help you today?</p>
+
+    <div class="messages" id="messages"></div>
+    <div class="status" id="status"></div>
+
+    <div class="controls">
+        <input id="input" placeholder="Type your message..." />
+        <button class="send-btn" id="sendBtn" onclick="sendMessage()">Send</button>
+        <button class="clear-btn" onclick="clearChat()">Clear Chat</button>
+    </div>
+</div>
+
+<script>
+async function sendMessage() {
+    const input = document.getElementById("input");
+    const message = input.value.trim();
+    if (!message) return;
+
+    const messagesDiv = document.getElementById("messages");
+    const statusDiv = document.getElementById("status");
+    const sendBtn = document.getElementById("sendBtn");
+
+    // Show user message
+    messagesDiv.innerHTML += `<div class="user"><b>You:</b> ${message}</div>`;
+    input.value = "";
+
+    // Show loading status
+    statusDiv.innerText = "Coach is thinking...";
+    sendBtn.disabled = true;
+
+    try {
+        const response = await fetch("/api/chat", {
+            method: "POST",
+            headers: {"Content-Type": "application/json"},
+            body: JSON.stringify({message: message})
+        });
+
+        const data = await response.json();
+
+        if (data.reply) {
+            messagesDiv.innerHTML += `<div class="coach"><b>Coach:</b> ${data.reply}</div>`;
+        } else {
+            messagesDiv.innerHTML += `<div class="coach"><b>Coach:</b> Sorry, something went wrong.</div>`;
+        }
+    } catch (err) {
+        messagesDiv.innerHTML += `<div class="coach"><b>Coach:</b> Network error. Please try again.</div>`;
+    }
+
+    // Clear loading state
+    statusDiv.innerText = "";
+    sendBtn.disabled = false;
+    messagesDiv.scrollTop = messagesDiv.scrollHeight;
+}
+
+// Clear chat history
+function clearChat() {
+    document.getElementById("messages").innerHTML = "";
+    document.getElementById("status").innerText = "";
+}
+</script>
+</body>
+</html>
